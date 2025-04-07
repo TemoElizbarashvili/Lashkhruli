@@ -41,12 +41,6 @@ TextureImporter:
   - first:
       213: -1569169552924993018
     second: WORLD SPRITES_12
-  - first:
-      213: -3123805431609175872
-    second: WORLD SPRITES_13
-  - first:
-      213: 1822258387201048575
-    second: WORLD SPRITES_14
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -90,10 +84,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 96
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -117,7 +111,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -158,10 +152,10 @@ TextureImporter:
       name: WORLD SPRITES_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 244
-        width: 64
-        height: 60
+        x: 160
+        y: 257
+        width: 63
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,10 +174,10 @@ TextureImporter:
       name: WORLD SPRITES_1
       rect:
         serializedVersion: 2
-        x: 86
-        y: 244
-        width: 64
-        height: 59
+        x: 241
+        y: 257
+        width: 63
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,10 +196,10 @@ TextureImporter:
       name: WORLD SPRITES_2
       rect:
         serializedVersion: 2
-        x: 166
-        y: 294
-        width: 23
-        height: 19
+        x: 81
+        y: 178
+        width: 62
+        height: 62
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,10 +218,10 @@ TextureImporter:
       name: WORLD SPRITES_3
       rect:
         serializedVersion: 2
-        x: 230
-        y: 271
-        width: 37
-        height: 33
+        x: 160
+        y: 176
+        width: 63
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -246,10 +240,10 @@ TextureImporter:
       name: WORLD SPRITES_4
       rect:
         serializedVersion: 2
-        x: 176
-        y: 257
-        width: 36
-        height: 30
+        x: 241
+        y: 176
+        width: 63
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -268,10 +262,10 @@ TextureImporter:
       name: WORLD SPRITES_5
       rect:
         serializedVersion: 2
-        x: 14
-        y: 170
-        width: 64
-        height: 60
+        x: 0
+        y: 97
+        width: 63
+        height: 62
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -290,10 +284,10 @@ TextureImporter:
       name: WORLD SPRITES_6
       rect:
         serializedVersion: 2
-        x: 85
-        y: 170
-        width: 69
-        height: 60
+        x: 81
+        y: 97
+        width: 62
+        height: 62
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -312,10 +306,10 @@ TextureImporter:
       name: WORLD SPRITES_7
       rect:
         serializedVersion: 2
-        x: 176
-        y: 213
-        width: 29
-        height: 27
+        x: 161
+        y: 97
+        width: 62
+        height: 62
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -334,10 +328,10 @@ TextureImporter:
       name: WORLD SPRITES_8
       rect:
         serializedVersion: 2
-        x: 16
-        y: 102
+        x: 240
+        y: 96
         width: 64
-        height: 60
+        height: 30
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -356,10 +350,10 @@ TextureImporter:
       name: WORLD SPRITES_9
       rect:
         serializedVersion: 2
-        x: 85
-        y: 102
-        width: 64
-        height: 60
+        x: 1
+        y: 17
+        width: 62
+        height: 62
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -378,10 +372,10 @@ TextureImporter:
       name: WORLD SPRITES_10
       rect:
         serializedVersion: 2
-        x: 162
-        y: 129
-        width: 66
-        height: 24
+        x: 81
+        y: 16
+        width: 62
+        height: 63
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -397,13 +391,35 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
+      name: WORLD SPRITES_11
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 17
+        width: 68
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce8c30e68322d9cf0800000000000000
+      internalID: -244001179048883988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
       name: WORLD SPRITES_12
       rect:
         serializedVersion: 2
-        x: 8
-        y: 0
-        width: 57
-        height: 90
+        x: 240
+        y: 16
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -418,55 +434,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: WORLD SPRITES_13
-      rect:
-        serializedVersion: 2
-        x: 85
-        y: 63
-        width: 64
-        height: 30
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0c0df75b28306a4d0800000000000000
-      internalID: -3123805431609175872
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: WORLD SPRITES_14
-      rect:
-        serializedVersion: 2
-        x: 244
-        y: 15
-        width: 73
-        height: 107
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fff38123956f94910800000000000000
-      internalID: 1822258387201048575
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8dfa5a518f9e5d642a0455a7d42554b2
+    spriteID: ac407926578d16e4ea9e071b4158458a
     internalID: 0
     vertices: []
     indices: 
@@ -479,9 +451,8 @@ TextureImporter:
       WORLD SPRITES_0: 6641565131612018467
       WORLD SPRITES_1: 8942307464417301172
       WORLD SPRITES_10: -5748320103134949940
+      WORLD SPRITES_11: -244001179048883988
       WORLD SPRITES_12: -1569169552924993018
-      WORLD SPRITES_13: -3123805431609175872
-      WORLD SPRITES_14: 1822258387201048575
       WORLD SPRITES_2: -5522460176898599612
       WORLD SPRITES_3: -143213878708448367
       WORLD SPRITES_4: -2086181395254279182

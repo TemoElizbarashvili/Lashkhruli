@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -10,22 +11,24 @@ public class PlayerActions : MonoBehaviour
 
     [SerializeField] private float speed = 2;
     [SerializeField] private float jumpForce = 2;
-    [SerializeField] private float wallVerticalJumpForce;
-    [SerializeField] private float wallHorizontalJumpForce;
     [SerializeField] private Transform hangingAllowedHeight;
     [SerializeField] private Transform[] groundCheckTransformObjects;
+    [SerializeField] private ParticleSystem jumpParticleSystem;
 
     private Rigidbody2D rb;
     private Animator animator;
+    private ParticleSystem grassParticleSystem;
     private bool grounded = false;
     private bool canDoubleJump = false;
     private bool isHanging = false;
+    private Coroutine hangingCoroutine;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        grassParticleSystem = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -44,11 +47,24 @@ public class PlayerActions : MonoBehaviour
 
     private void Move()
     {
-        if (isHanging) return;
+        if (isHanging)
+        {
+            rb.linearVelocity = new Vector2(0, 0);
+            return;
+        }
 
         horizontal = Input.GetAxis("Horizontal");
         animator.SetFloat("Speed", Math.Abs(horizontal));
+
         rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+    }
+
+    public void EmitGrassParticles()
+    {
+        if (grounded)
+        {
+            grassParticleSystem.Emit(8);
+        }
     }
 
     private Vector3 FlipHero()
@@ -63,24 +79,32 @@ public class PlayerActions : MonoBehaviour
     {
         if (isHanging)
         {
-            var jumpDirection = new Vector2((-transform.localScale.x) * wallHorizontalJumpForce, wallVerticalJumpForce);
+            isHanging = false;
             rb.gravityScale = 1f;
 
+            var jumpDirection = new Vector2(-transform.localScale.x * jumpForce, jumpForce);
+            rb.linearVelocity = Vector2.zero;
+            StopFalling();
             rb.AddForce(jumpDirection, ForceMode2D.Impulse);
+            animator.SetBool("IsHanging", false);
+
             canDoubleJump = true;
         }
         else if (grounded)
         {
-            rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce));
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            jumpParticleSystem.Emit(20);
             canDoubleJump = true;
-
         }
         else if (canDoubleJump)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, 0);
-            rb.AddForce(new Vector2(rb.linearVelocityX, jumpForce));
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+
             canDoubleJump = false;
         }
+
         animator.SetTrigger("Jump");
     }
 
@@ -111,8 +135,7 @@ public class PlayerActions : MonoBehaviour
         if (Physics2D.Linecast(transform.position, hangingAllowedHeight.position).collider)
             return;
 
-        isHanging = true;
-        animator.SetBool("IsHanging", true);
+        EnterWallHang();
     }
 
     private void OnCollisionStay2D(Collision2D coll)
@@ -120,9 +143,7 @@ public class PlayerActions : MonoBehaviour
         if (!IsCollisionHappenedWithWall(coll))
             return;
 
-        rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 0f;
-        //TODO: make a timer to start increasing gravity and fall character
+        MaintainWallHang();
     }
 
     private void OnCollisionExit2D(Collision2D coll)
@@ -130,14 +151,77 @@ public class PlayerActions : MonoBehaviour
         if (!IsCollisionHappenedWithWall(coll))
             return;
 
-        rb.gravityScale = 1f;
+        ExitWallHang();
+    }
+
+    private void EnterWallHang()
+    {
+        if (isHanging)
+            return;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0f;
+        isHanging = true;
+        animator.SetBool("IsHanging", true);
+        hangingCoroutine ??= StartCoroutine(IncreaseGravityOverTime());
+    }
+
+    private void MaintainWallHang()
+    {
+        if (!isHanging)
+            return;
+
+        rb.linearVelocity = Vector2.zero;
+    }
+
+    private void ExitWallHang()
+    {
+        if (!isHanging)
+            return;
+
         isHanging = false;
+        rb.gravityScale = 1f;
         animator.SetBool("IsHanging", false);
+
+        if (hangingCoroutine == null)
+            return;
+
+        StopFalling();
     }
 
     private bool IsCollisionHappenedWithWall(Collision2D coll)
     {
         var collGameObj = coll.gameObject;
         return string.Equals(collGameObj.tag, WallTag);
+    }
+
+    private IEnumerator IncreaseGravityOverTime()
+    {
+        yield return new WaitForSeconds(1f);
+
+        const float targetGravity = 0.3f;
+        const float duration = 3f;
+        const float startGravity = 0f;
+        var time = 0f;
+
+        while (time < duration && Math.Abs(rb.gravityScale) < 1)
+        {
+            time += Time.deltaTime;
+            rb.gravityScale = Mathf.Lerp(startGravity, targetGravity, time / duration);
+            yield return null;
+        }
+
+        rb.gravityScale = targetGravity;
+        animator.SetTrigger("Fall");
+        ExitWallHang();
+    }
+
+    private void StopFalling()
+    {
+        if (hangingCoroutine == null)
+            return;
+
+        StopCoroutine(hangingCoroutine);
+        hangingCoroutine = null;
     }
 }

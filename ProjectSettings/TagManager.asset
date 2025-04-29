@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Wall
+  - Chest
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Chest
   - Water
   - UI
   - 
@@ -39,6 +40,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: chest
+    uniqueID: 341512699
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -7,21 +7,26 @@ using Vector3 = UnityEngine.Vector3;
 public class PlayerActions : MonoBehaviour
 {
     private const string WallTag = "Wall";
+    private const string EarthTag = "Earth";
+    private const string EnemyTag = "Enemy";
     private float horizontal = 0.0f;
 
     [SerializeField] private float speed = 2;
     [SerializeField] private float jumpForce = 2;
     [SerializeField] private Transform hangingAllowedHeight;
     [SerializeField] private Transform[] groundCheckTransformObjects;
+    [SerializeField] private Transform damageDistanceTransform;
     [SerializeField] private ParticleSystem jumpParticleSystem;
 
     private Rigidbody2D rb;
     private Animator animator;
     private ParticleSystem grassParticleSystem;
     private bool grounded = false;
+    private bool isEarthed = false;
     private bool canDoubleJump = false;
     private bool isHanging = false;
     private Coroutine hangingCoroutine;
+    private bool isAttacking = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,6 +41,7 @@ public class PlayerActions : MonoBehaviour
     {
         GroundCheck();
         Move();
+        Attack();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -43,6 +49,16 @@ public class PlayerActions : MonoBehaviour
         }
 
         transform.localScale = FlipHero();
+    }
+
+    public void OnAttackStart()
+    {
+        isAttacking = true;
+    }
+
+    public void OnAttackEnd()
+    {
+        isAttacking = false;
     }
 
     private void Move()
@@ -59,9 +75,10 @@ public class PlayerActions : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
     }
 
+    // This method is called from the engine while walk anim frames <3
     public void EmitGrassParticles()
     {
-        if (grounded)
+        if (grounded && isEarthed)
         {
             grassParticleSystem.Emit(8);
         }
@@ -119,12 +136,25 @@ public class PlayerActions : MonoBehaviour
                 grounded = true;
                 animator.SetBool("IsGrounded", true);
                 canDoubleJump = true;
+                isEarthed = hit2D.collider.gameObject.tag.Equals(EarthTag);
                 break;
             }
             animator.SetBool("IsGrounded", false);
+            isEarthed = false;
             grounded = false;
         }
 
+    }
+
+    private void TryDamageEnemy()
+    {
+        var hit2D = Physics2D.Linecast(transform.position, damageDistanceTransform.position);
+        if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag)) return;
+        var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
+        if (enemy == null) 
+            return;
+        Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
+        enemy.TakeDamage(10, hitDirection);
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -223,5 +253,17 @@ public class PlayerActions : MonoBehaviour
 
         StopCoroutine(hangingCoroutine);
         hangingCoroutine = null;
+    }
+
+    private void Attack()
+    {
+        if (!Input.GetMouseButtonDown(0)) 
+            return;
+
+        if (isAttacking)
+            return;
+
+        animator.SetTrigger("IsAttacking");
+        TryDamageEnemy();
     }
 }

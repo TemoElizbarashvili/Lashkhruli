@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour
 {
+    public int RewardPoint = 10;
+    public ParticleSystem ChestParticleSystem;
+
     private bool isPlayerNear = false;
     private bool isOpened = false;
     private Animator animator;
-
-    [SerializeField] private int rewardPoint = 10;
-    [SerializeField] private ParticleSystem chestParticleSystem;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +28,7 @@ public class Chest : MonoBehaviour
     {
         animator.SetTrigger("Open");
         isOpened = true;
-        chestParticleSystem.Stop();
+        ChestParticleSystem.Stop();
         //TODO: add points to player <3
     }
 

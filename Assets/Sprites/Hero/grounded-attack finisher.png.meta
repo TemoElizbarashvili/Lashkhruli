@@ -1,25 +1,34 @@
 fileFormatVersion: 2
-guid: 548e19f594fbaf74998a3d1cea384c7d
+guid: f19f001f5306a4c439a9a2c4367333e2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7711367058026858572
-    second: enemyies-export_0
+      213: 8809002159270952299
+    second: grounded-attack finisher_0
   - first:
-      213: 7005876149979948185
-    second: enemyies-export_1
+      213: -2879277458977867586
+    second: grounded-attack finisher_1
   - first:
-      213: -7517428901040084920
-    second: enemyies-export_2
+      213: 5300359217359661541
+    second: grounded-attack finisher_2
   - first:
-      213: 4984500680872389698
-    second: enemyies-export_3
+      213: 555002435685574335
+    second: grounded-attack finisher_3
   - first:
-      213: -6415213126621299313
-    second: enemyies-export_4
+      213: -4194776985038725214
+    second: grounded-attack finisher_4
   - first:
-      213: 5759289442100490948
-    second: enemyies-export_5
+      213: 8198185419934340319
+    second: grounded-attack finisher_5
+  - first:
+      213: -1332261808801566540
+    second: grounded-attack finisher_6
+  - first:
+      213: 4355008605329419430
+    second: grounded-attack finisher_7
+  - first:
+      213: 5780038191713100871
+    second: grounded-attack finisher_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -66,7 +75,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -128,78 +137,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: enemyies-export_0
-      rect:
-        serializedVersion: 2
-        x: 5
-        y: 152
-        width: 76
-        height: 69
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c4807529b77440b60800000000000000
-      internalID: 7711367058026858572
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemyies-export_1
-      rect:
-        serializedVersion: 2
-        x: 93
-        y: 152
-        width: 56
-        height: 69
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 994afeb5d3fd93160800000000000000
-      internalID: 7005876149979948185
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemyies-export_2
-      rect:
-        serializedVersion: 2
-        x: 6
-        y: 0
-        width: 64
-        height: 76
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 84820495e3abca790800000000000000
-      internalID: -7517428901040084920
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemyies-export_3
+      name: grounded-attack finisher_0
       rect:
         serializedVersion: 2
         x: 10
-        y: 78
-        width: 66
+        y: 0
+        width: 37
         height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -207,54 +150,120 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 24c6712d5f08c2540800000000000000
-      internalID: 4984500680872389698
+      spriteID: 5b1382b78aae0174d920df33cb8680a3
+      internalID: 52793284
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemyies-export_4
+      name: grounded-attack finisher_1
       rect:
         serializedVersion: 2
-        x: 81
-        y: 77
-        width: 75
-        height: 73
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f8d705d86a598f6a0800000000000000
-      internalID: -6415213126621299313
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemyies-export_5
-      rect:
-        serializedVersion: 2
-        x: 90
+        x: 72
         y: 0
-        width: 55
-        height: 64
+        width: 49
+        height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4c2be0bcb3b1def40800000000000000
-      internalID: 5759289442100490948
+      spriteID: d12f339009de34b45855a1084e55e848
+      internalID: -1966303756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grounded-attack finisher_2
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 0
+        width: 51
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 573bd869509396844bfc036aa11086c4
+      internalID: -290919926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grounded-attack finisher_3
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 0
+        width: 67
+        height: 70
+      alignment: 9
+      pivot: {x: 0.4925373, y: 0.5285714}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffa9166aa9ac15e4d8e490e29799afa4
+      internalID: -210503295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grounded-attack finisher_5
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 0
+        width: 59
+        height: 70
+      alignment: 9
+      pivot: {x: 0.47457626, y: 0.4857143}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c633852bc6e647e44843110247cc0417
+      internalID: 1079681584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grounded-attack finisher_8
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 0
+        width: 60
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38953156080dd304ab49babe4ecfd59b
+      internalID: 940244521
       vertices: []
       indices: 
       edges: []
@@ -263,7 +272,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e549ce8ce2f266846b680134e7225172
+    spriteID: 478a8f96fb10d7c48a71a17add0a494e
     internalID: 0
     vertices: []
     indices: 
@@ -273,12 +282,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      enemyies-export_0: 7711367058026858572
-      enemyies-export_1: 7005876149979948185
-      enemyies-export_2: -7517428901040084920
-      enemyies-export_3: 4984500680872389698
-      enemyies-export_4: -6415213126621299313
-      enemyies-export_5: 5759289442100490948
+      grounded-attack finisher_0: 52793284
+      grounded-attack finisher_1: -1966303756
+      grounded-attack finisher_2: -290919926
+      grounded-attack finisher_3: -210503295
+      grounded-attack finisher_4: 1032902652
+      grounded-attack finisher_5: 1079681584
+      grounded-attack finisher_6: -1393580723
+      grounded-attack finisher_7: -975330881
+      grounded-attack finisher_8: 940244521
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

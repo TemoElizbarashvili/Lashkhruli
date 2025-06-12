@@ -21,17 +21,19 @@ public class PlayerActions : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private ParticleSystem grassParticleSystem;
+    private SpriteRenderer spriteRenderer;
     private bool grounded = false;
     private bool isEarthed = false;
     private bool canDoubleJump = false;
     private bool isHanging = false;
     private Coroutine hangingCoroutine;
-    private bool isAttacking = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sortingOrder = 23;
         animator = GetComponent<Animator>();
         grassParticleSystem = GetComponent<ParticleSystem>();
     }
@@ -41,7 +43,6 @@ public class PlayerActions : MonoBehaviour
     {
         GroundCheck();
         Move();
-        Attack();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -49,16 +50,6 @@ public class PlayerActions : MonoBehaviour
         }
 
         transform.localScale = FlipHero();
-    }
-
-    public void OnAttackStart()
-    {
-        isAttacking = true;
-    }
-
-    public void OnAttackEnd()
-    {
-        isAttacking = false;
     }
 
     private void Move()
@@ -107,7 +98,7 @@ public class PlayerActions : MonoBehaviour
 
             canDoubleJump = true;
         }
-        else if (grounded)
+        else if (isEarthed)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
@@ -146,13 +137,15 @@ public class PlayerActions : MonoBehaviour
 
     }
 
-    private void TryDamageEnemy()
+    public void TryDamageEnemy()
     {
-        var hit2D = Physics2D.Linecast(transform.position, damageDistanceTransform.position);
-        if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag)) return;
-        var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
-        if (enemy == null) 
+        var enemyLayerMask = LayerMask.GetMask("Enemy");
+
+        var hit2D = Physics2D.Linecast(transform.position, damageDistanceTransform.position, enemyLayerMask);
+        if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
             return;
+
+        var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
         Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
         enemy.TakeDamage(10, hitDirection);
     }
@@ -255,15 +248,4 @@ public class PlayerActions : MonoBehaviour
         hangingCoroutine = null;
     }
 
-    private void Attack()
-    {
-        if (!Input.GetMouseButtonDown(0)) 
-            return;
-
-        if (isAttacking)
-            return;
-
-        animator.SetTrigger("IsAttacking");
-        TryDamageEnemy();
-    }
 }

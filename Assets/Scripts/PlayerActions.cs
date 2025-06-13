@@ -4,19 +4,22 @@ using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
-public class PlayerActions : MonoBehaviour
+public class Player : MonoBehaviour
 {
+    public float Speed = 2;
+    public float JumpForce = 2;
+    public Transform HangingAllowedHeight;
+    public Transform[] GroundCheckTransformObjects;
+    public Transform DamageDistanceTransform;
+    public ParticleSystem JumpParticleSystem;
+    public int MaxHealth = 100;
+    public int CurrentHealth;
+    public HealthBar HealthBar;
+
     private const string WallTag = "Wall";
     private const string EarthTag = "Earth";
     private const string EnemyTag = "Enemy";
     private float horizontal = 0.0f;
-
-    [SerializeField] private float speed = 2;
-    [SerializeField] private float jumpForce = 2;
-    [SerializeField] private Transform hangingAllowedHeight;
-    [SerializeField] private Transform[] groundCheckTransformObjects;
-    [SerializeField] private Transform damageDistanceTransform;
-    [SerializeField] private ParticleSystem jumpParticleSystem;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -28,6 +31,7 @@ public class PlayerActions : MonoBehaviour
     private bool isHanging = false;
     private Coroutine hangingCoroutine;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,6 +40,8 @@ public class PlayerActions : MonoBehaviour
         spriteRenderer.sortingOrder = 23;
         animator = GetComponent<Animator>();
         grassParticleSystem = GetComponent<ParticleSystem>();
+        CurrentHealth = MaxHealth;
+        HealthBar.SetMaxHealth(MaxHealth);
     }
 
     // Update is called once per frame
@@ -49,7 +55,24 @@ public class PlayerActions : MonoBehaviour
             Jump();
         }
 
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            TakeDamage(20);
+        }
+
+
         transform.localScale = FlipHero();
+    }
+
+    void TakeDamage(int damage)
+    {
+        CurrentHealth -= damage;
+        HealthBar.SetHealth(CurrentHealth);
+        if (CurrentHealth <= 0)
+        {
+            //TODO: DIE
+            //Die();
+        }
     }
 
     private void Move()
@@ -63,7 +86,7 @@ public class PlayerActions : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         animator.SetFloat("Speed", Math.Abs(horizontal));
 
-        rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(horizontal * Speed, rb.linearVelocity.y);
     }
 
     // This method is called from the engine while walk anim frames <3
@@ -90,7 +113,7 @@ public class PlayerActions : MonoBehaviour
             isHanging = false;
             rb.gravityScale = 1f;
 
-            var jumpDirection = new Vector2(-transform.localScale.x * jumpForce, jumpForce);
+            var jumpDirection = new Vector2(-transform.localScale.x * JumpForce, JumpForce);
             rb.linearVelocity = Vector2.zero;
             StopFalling();
             rb.AddForce(jumpDirection, ForceMode2D.Impulse);
@@ -101,14 +124,14 @@ public class PlayerActions : MonoBehaviour
         else if (isEarthed)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-            jumpParticleSystem.Emit(20);
+            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
+            JumpParticleSystem.Emit(20);
             canDoubleJump = true;
         }
         else if (canDoubleJump)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
 
             canDoubleJump = false;
         }
@@ -118,7 +141,7 @@ public class PlayerActions : MonoBehaviour
 
     private void GroundCheck()
     {
-        foreach (var groundCheck in groundCheckTransformObjects)
+        foreach (var groundCheck in GroundCheckTransformObjects)
         {
             var hit2D = Physics2D.Linecast(transform.position, groundCheck.position);
 
@@ -141,12 +164,16 @@ public class PlayerActions : MonoBehaviour
     {
         var enemyLayerMask = LayerMask.GetMask("Enemy");
 
-        var hit2D = Physics2D.Linecast(transform.position, damageDistanceTransform.position, enemyLayerMask);
+        var hit2D = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, enemyLayerMask);
         if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
             return;
 
         var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
         Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
+        if (enemy.horizontal < 0)
+        {
+            hitDirection.x = hitDirection.x * -1;
+        }
         enemy.TakeDamage(10, hitDirection);
     }
 
@@ -155,7 +182,7 @@ public class PlayerActions : MonoBehaviour
         if (!IsCollisionHappenedWithWall(coll))
             return;
 
-        if (Physics2D.Linecast(transform.position, hangingAllowedHeight.position).collider)
+        if (Physics2D.Linecast(transform.position, HangingAllowedHeight.position).collider)
             return;
 
         EnterWallHang();

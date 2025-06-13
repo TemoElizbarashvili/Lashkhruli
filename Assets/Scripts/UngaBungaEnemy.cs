@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,8 +7,9 @@ public class UngaBungaEnemy : MonoBehaviour
     #region Public Properties
 
     public int Health = 100;
-    public GameObject deathEffectPrefab;
     public float Speed = 1.5f;
+    public float horizontal = 1.0f;
+    public GameObject deathEffectPrefab;
     public Transform FrontPoint;
 
     #endregion
@@ -17,7 +19,6 @@ public class UngaBungaEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private ParticleSystem bloodParticleSystem;
-    private float horizontal = 1.0f;
 
     #endregion
    
@@ -26,7 +27,7 @@ public class UngaBungaEnemy : MonoBehaviour
         bloodParticleSystem = GetComponent<ParticleSystem>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        InvokeRepeating(nameof(MakeIdleAnim), 0f, 5f);
+        InvokeRepeating(nameof(MakeIdleAnim), 5f, 5f);
     }
 
     void Update()
@@ -48,8 +49,9 @@ public class UngaBungaEnemy : MonoBehaviour
 
     private void Move()
     {
-        rb.linearVelocity = new Vector2(horizontal * Speed, GetComponent<Rigidbody>().linearVelocity.y);
+        rb.linearVelocity = new Vector2(horizontal * Speed, rb.linearVelocity.y);
     }
+
     private void CheckForWalls()
     {
         var wallLayerMask = LayerMask.GetMask("Earth");
@@ -63,10 +65,21 @@ public class UngaBungaEnemy : MonoBehaviour
 
         transform.localScale = FlipAsset();
     }
+
     private Vector3 FlipAsset()
     {
         horizontal *= -1;
         return new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+    }
+
+    private void StopMoving()
+    {
+        Speed = 0;
+    }
+
+    private void StartMoving()
+    {
+        Speed = 1.5f;
     }
 
     #endregion
@@ -81,7 +94,7 @@ public class UngaBungaEnemy : MonoBehaviour
 
         for (var i = 0; i < 10; i++)
         {
-            Vector2 randomDir = Quaternion.Euler(horizontal, 0, Random.Range(-30f, 30f)) * hitDirection;
+            Vector2 randomDir = Quaternion.Euler(Math.Abs(horizontal), 0, Random.Range(-30f, 30f)) * hitDirection;
             emitParams.velocity = randomDir.normalized * Random.Range(3f, 5f);
             emitParams.startSize = Random.Range(0.1f, 0.2f);
             emitParams.startColor = Color.red;

@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
 public class UngaBungaEnemy : MonoBehaviour
@@ -8,9 +11,10 @@ public class UngaBungaEnemy : MonoBehaviour
 
     public int Health = 100;
     public float Speed = 1.5f;
-    public float horizontal = 1.0f;
-    public GameObject deathEffectPrefab;
+    public float Horizontal = 1.0f;
+    public GameObject DeathEffectPrefab;
     public Transform FrontPoint;
+    public AudioSource DeathSound;
 
     #endregion
 
@@ -19,15 +23,18 @@ public class UngaBungaEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private ParticleSystem bloodParticleSystem;
+    private float currentSpeed;
+
 
     #endregion
-   
+
     void Start()
     {
         bloodParticleSystem = GetComponent<ParticleSystem>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         InvokeRepeating(nameof(MakeIdleAnim), 5f, 5f);
+        currentSpeed = Speed;
     }
 
     void Update()
@@ -49,7 +56,7 @@ public class UngaBungaEnemy : MonoBehaviour
 
     private void Move()
     {
-        rb.linearVelocity = new Vector2(horizontal * Speed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(Horizontal * currentSpeed, rb.linearVelocity.y);
     }
 
     private void CheckForWalls()
@@ -68,18 +75,18 @@ public class UngaBungaEnemy : MonoBehaviour
 
     private Vector3 FlipAsset()
     {
-        horizontal *= -1;
+        Horizontal *= -1;
         return new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 
     private void StopMoving()
     {
-        Speed = 0;
+        currentSpeed = 0;
     }
 
     private void StartMoving()
     {
-        Speed = 1.5f;
+        currentSpeed = Speed;
     }
 
     #endregion
@@ -94,7 +101,7 @@ public class UngaBungaEnemy : MonoBehaviour
 
         for (var i = 0; i < 10; i++)
         {
-            Vector2 randomDir = Quaternion.Euler(Math.Abs(horizontal), 0, Random.Range(-30f, 30f)) * hitDirection;
+            Vector2 randomDir = Quaternion.Euler(Math.Abs(Horizontal), 0, Random.Range(-30f, 30f)) * hitDirection;
             emitParams.velocity = randomDir.normalized * Random.Range(3f, 5f);
             emitParams.startSize = Random.Range(0.1f, 0.2f);
             emitParams.startColor = Color.red;
@@ -103,21 +110,30 @@ public class UngaBungaEnemy : MonoBehaviour
             animator.SetTrigger("Damage");
         }
 
-        if (Health <= 0)
+        if (Health > 0)
         {
-            Die();
+            return;
         }
+        Die();
     }
 
     public void Die()
     {
-        if (deathEffectPrefab != null)
+        if (DeathEffectPrefab != null)
         {
-            Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
+            Instantiate(DeathEffectPrefab, transform.position, Quaternion.identity);
         }
-
+        if (DeathSound != null)
+        {
+            var audioObj = Instantiate(DeathSound, transform.position, Quaternion.identity);
+            if (audioObj != null)
+            {
+                Helpers.PlayAudioSafely(audioObj);
+            }
+        }
         Destroy(gameObject);
     }
+
 
     #endregion
 

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Object = System.Object;
 using Random = UnityEngine.Random;
 
 public class Chest : MonoBehaviour
@@ -7,6 +8,8 @@ public class Chest : MonoBehaviour
     public int RewardPoint = 10;
     public ParticleSystem ChestParticleSystem;
     public EconomyManager EconomyManager;
+    public AudioSource IdleAudioSource;
+    public AudioSource OpenAudioSource;
 
     private bool isPlayerNear = false;
     private bool isOpened = false;
@@ -30,9 +33,9 @@ public class Chest : MonoBehaviour
     void OpenChest()
     {
         animator.SetTrigger("Open");
-        isOpened = true;
+        Destroy(IdleAudioSource);
         ChestParticleSystem.Stop();
-        //TODO: add points to player <3
+        isOpened = true;
         var foundedMoney = Random.Range(10, 50);
         EconomyManager.AddCoins(foundedMoney);
     }
@@ -51,5 +54,10 @@ public class Chest : MonoBehaviour
         {
             isPlayerNear = false;
         }
+    }
+
+    public void PlayOpenAudio()
+    {
+        OpenAudioSource.Play();
     }
 }

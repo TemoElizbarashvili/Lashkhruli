@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     public int MaxHealth = 100;
     public int CurrentHealth;
     public HealthBar HealthBar;
+    public AudioSource SwordSwingSound;
+    public AudioSource SwordHitSound;
 
     private const string WallTag = "Wall";
     private const string EarthTag = "Earth";
@@ -166,15 +168,20 @@ public class Player : MonoBehaviour
 
         var hit2D = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, enemyLayerMask);
         if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
+        {
+            Helpers.PlayAudioSafely(SwordSwingSound);
             return;
+        }
 
         var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
         Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
-        if (enemy.horizontal < 0)
+        if (enemy.Horizontal < 0)
         {
-            hitDirection.x = hitDirection.x * -1;
+            hitDirection.x *= -1;
         }
         enemy.TakeDamage(10, hitDirection);
+        Helpers.PlayAudioSafely(SwordSwingSound);
+        Helpers.PlayAudioSafely(SwordHitSound);
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -274,5 +281,4 @@ public class Player : MonoBehaviour
         StopCoroutine(hangingCoroutine);
         hangingCoroutine = null;
     }
-
 }

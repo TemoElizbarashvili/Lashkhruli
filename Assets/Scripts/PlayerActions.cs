@@ -6,6 +6,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Player : MonoBehaviour
 {
+
+    #region Public variables
+
     public float Speed = 2;
     public float JumpForce = 2;
     public Transform HangingAllowedHeight;
@@ -18,11 +21,14 @@ public class Player : MonoBehaviour
     public AudioSource SwordSwingSound;
     public AudioSource SwordHitSound;
 
+    #endregion
+
+    #region Private variables
+
     private const string WallTag = "Wall";
     private const string EarthTag = "Earth";
     private const string EnemyTag = "Enemy";
     private float horizontal = 0.0f;
-
     private Rigidbody2D rb;
     private Animator animator;
     private ParticleSystem grassParticleSystem;
@@ -33,6 +39,7 @@ public class Player : MonoBehaviour
     private bool isHanging = false;
     private Coroutine hangingCoroutine;
 
+    #endregion
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -66,16 +73,7 @@ public class Player : MonoBehaviour
         transform.localScale = FlipHero();
     }
 
-    void TakeDamage(int damage)
-    {
-        CurrentHealth -= damage;
-        HealthBar.SetHealth(CurrentHealth);
-        if (CurrentHealth <= 0)
-        {
-            //TODO: DIE
-            //Die();
-        }
-    }
+    #region Movement
 
     private void Move()
     {
@@ -91,22 +89,13 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontal * Speed, rb.linearVelocity.y);
     }
 
-    // This method is called from the engine while walk anim frames <3
-    public void EmitGrassParticles()
-    {
-        if (grounded && isEarthed)
-        {
-            grassParticleSystem.Emit(8);
-        }
-    }
-
     private Vector3 FlipHero()
-         => horizontal switch
-         {
-             > 0.1f => new Vector3(1, transform.localScale.y, transform.localScale.z),
-             < -0.1f => new Vector3(-1, transform.localScale.y, transform.localScale.z),
-             _ => transform.localScale
-         };
+        => horizontal switch
+        {
+            > 0.1f => new Vector3(1, transform.localScale.y, transform.localScale.z),
+            < -0.1f => new Vector3(-1, transform.localScale.y, transform.localScale.z),
+            _ => transform.localScale
+        };
 
     private void Jump()
     {
@@ -141,55 +130,15 @@ public class Player : MonoBehaviour
         animator.SetTrigger("Jump");
     }
 
-    private void GroundCheck()
-    {
-        foreach (var groundCheck in GroundCheckTransformObjects)
-        {
-            var hit2D = Physics2D.Linecast(transform.position, groundCheck.position);
-
-            if (hit2D.collider)
-            {
-                grounded = true;
-                animator.SetBool("IsGrounded", true);
-                canDoubleJump = true;
-                isEarthed = hit2D.collider.gameObject.tag.Equals(EarthTag);
-                break;
-            }
-            animator.SetBool("IsGrounded", false);
-            isEarthed = false;
-            grounded = false;
-        }
-
-    }
-
-    public void TryDamageEnemy()
-    {
-        var enemyLayerMask = LayerMask.GetMask("Enemy");
-
-        var hit2D = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, enemyLayerMask);
-        if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
-        {
-            Helpers.PlayAudioSafely(SwordSwingSound);
-            return;
-        }
-
-        var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
-        Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
-        if (enemy.Horizontal < 0)
-        {
-            hitDirection.x *= -1;
-        }
-        enemy.TakeDamage(10, hitDirection);
-        Helpers.PlayAudioSafely(SwordSwingSound);
-        Helpers.PlayAudioSafely(SwordHitSound);
-    }
-
+    // Wall hang 
     private void OnCollisionEnter2D(Collision2D coll)
     {
         if (!IsCollisionHappenedWithWall(coll))
             return;
 
-        if (Physics2D.Linecast(transform.position, HangingAllowedHeight.position).collider)
+        var earthLayerMask = LayerMask.GetMask("Earth");
+
+        if (Physics2D.Linecast(transform.position, HangingAllowedHeight.position, earthLayerMask).collider != null)
             return;
 
         EnterWallHang();
@@ -281,4 +230,81 @@ public class Player : MonoBehaviour
         StopCoroutine(hangingCoroutine);
         hangingCoroutine = null;
     }
+
+    private void GroundCheck()
+    {
+        var earthLayerMask = LayerMask.GetMask("Earth");
+
+        foreach (var groundCheck in GroundCheckTransformObjects)
+        {
+            var hit2D = Physics2D.Linecast(transform.position, groundCheck.position, earthLayerMask);
+
+            if (hit2D.collider != null)
+            {
+                grounded = true;
+                animator.SetBool("IsGrounded", true);
+                canDoubleJump = true;
+                isEarthed = hit2D.collider.gameObject.tag.Equals(EarthTag);
+                break;
+            }
+            animator.SetBool("IsGrounded", false);
+            isEarthed = false;
+            grounded = false;
+        }
+
+    }
+
+    #endregion
+
+    #region Combat
+
+    public void TryDamageEnemy()
+    {
+        var enemyLayerMask = LayerMask.GetMask("Enemy");
+
+        var hit2D = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, enemyLayerMask);
+        if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
+        {
+            Helpers.PlayAudioSafely(SwordSwingSound);
+            return;
+        }
+
+        var enemy = hit2D.collider.GetComponent<UngaBungaEnemy>();
+        Vector2 hitDirection = (enemy.transform.position - transform.position).normalized;
+        if (enemy.Horizontal < 0)
+        {
+            hitDirection.x *= -1;
+        }
+        enemy.TakeDamage(10, hitDirection);
+        Helpers.PlayAudioSafely(SwordSwingSound);
+        Helpers.PlayAudioSafely(SwordHitSound);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        animator.SetTrigger("TakeDamage");
+        CurrentHealth -= damage;
+        HealthBar.SetHealth(CurrentHealth);
+        if (CurrentHealth <= 0)
+        {
+            //TODO: DIE
+            //Die();
+        }
+    }
+
+    #endregion
+
+    #region Particles
+
+    // This method is called from the engine while walk anim frames <3
+    public void EmitGrassParticles()
+    {
+        if (grounded && isEarthed)
+        {
+            grassParticleSystem.Emit(8);
+        }
+    }
+
+    #endregion
+
 }

@@ -1,28 +1,34 @@
 fileFormatVersion: 2
-guid: 580d99b99c3a12f4fa537445972815bf
+guid: e17ccec925445094cb3adc703e60f51b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5279193116214260500
-    second: enemies walk better_0
+      213: -4368441903749070621
+    second: enemy attack_0
   - first:
-      213: -256129053668585428
-    second: enemies walk better_1
+      213: -1134831266865093198
+    second: enemy attack_1
   - first:
-      213: 1472652867712058870
-    second: enemies walk better_2
+      213: -5934291251024898539
+    second: enemy attack_2
   - first:
-      213: 6584314066947320492
-    second: enemies walk better_3
+      213: -4174185548560053300
+    second: enemy attack_3
   - first:
-      213: -3215697743398323030
-    second: enemies walk better_4
+      213: -3359510065187554673
+    second: enemy attack_4
   - first:
-      213: 6290476332425891028
-    second: enemies walk better_5
+      213: -3789949153859740780
+    second: enemy attack_5
   - first:
-      213: 5668071195420045713
-    second: enemies walk better_6
+      213: 7889889486471936027
+    second: enemy attack_6
+  - first:
+      213: -4824984644230787243
+    second: enemy attack_7
+  - first:
+      213: -5550076466753367157
+    second: enemy attack_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -131,13 +137,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: enemies walk better_0
+      name: enemy attack_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 182
-        width: 69
-        height: 75
+        x: 203
+        y: 38
+        width: 96
+        height: 105
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -146,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cec8c57c4d98cb6b0800000000000000
-      internalID: -5279193116214260500
+      spriteID: 3e00b19cb3d2063c0800000000000000
+      internalID: -4368441903749070621
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies walk better_1
+      name: enemy attack_1
       rect:
         serializedVersion: 2
-        x: 85
-        y: 182
-        width: 55
-        height: 74
+        x: 364
+        y: 38
+        width: 96
+        height: 105
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c205d639bfb027cf0800000000000000
-      internalID: -256129053668585428
+      spriteID: 2b5ef72b9f44040f0800000000000000
+      internalID: -1134831266865093198
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies walk better_2
+      name: enemy attack_2
       rect:
         serializedVersion: 2
-        x: 143
-        y: 182
-        width: 65
-        height: 75
+        x: 523
+        y: 38
+        width: 96
+        height: 105
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -190,20 +196,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6f500711bf9ef6410800000000000000
-      internalID: 1472652867712058870
+      spriteID: 516d3f46c8925ada0800000000000000
+      internalID: -5934291251024898539
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies walk better_3
+      name: enemy attack_5
       rect:
         serializedVersion: 2
-        x: 132
-        y: 102
-        width: 69
-        height: 75
+        x: 679
+        y: 38
+        width: 96
+        height: 105
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -212,20 +218,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: caaa00a32ce206b50800000000000000
-      internalID: 6584314066947320492
+      spriteID: 49bd5671355676bc0800000000000000
+      internalID: -3789949153859740780
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: enemies walk better_4
+      name: enemy attack_7
       rect:
         serializedVersion: 2
-        x: 1
-        y: 7
-        width: 60
-        height: 89
+        x: 40
+        y: 38
+        width: 96
+        height: 105
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -234,52 +240,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: aacb7bb90fb8f53d0800000000000000
-      internalID: -3215697743398323030
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemies walk better_5
-      rect:
-        serializedVersion: 2
-        x: 89
-        y: 7
-        width: 63
-        height: 89
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4dc4f3e55e24c4750800000000000000
-      internalID: 6290476332425891028
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: enemies walk better_6
-      rect:
-        serializedVersion: 2
-        x: 178
-        y: 7
-        width: 73
-        height: 90
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 191b2a4b8b809ae40800000000000000
-      internalID: 5668071195420045713
+      spriteID: 55fc8e9a7063a0db0800000000000000
+      internalID: -4824984644230787243
       vertices: []
       indices: 
       edges: []
@@ -288,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a07688f8311d3d049ba89bbd6b7f2b86
+    spriteID: 178ea1e5c4dc14e4194ee20c16b5babf
     internalID: 0
     vertices: []
     indices: 
@@ -298,13 +260,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      enemies walk better_0: -5279193116214260500
-      enemies walk better_1: -256129053668585428
-      enemies walk better_2: 1472652867712058870
-      enemies walk better_3: 6584314066947320492
-      enemies walk better_4: -3215697743398323030
-      enemies walk better_5: 6290476332425891028
-      enemies walk better_6: 5668071195420045713
+      enemy attack_0: -4368441903749070621
+      enemy attack_1: -1134831266865093198
+      enemy attack_2: -5934291251024898539
+      enemy attack_3: -4174185548560053300
+      enemy attack_4: -3359510065187554673
+      enemy attack_5: -3789949153859740780
+      enemy attack_6: 7889889486471936027
+      enemy attack_7: -4824984644230787243
+      enemy attack_8: -5550076466753367157
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

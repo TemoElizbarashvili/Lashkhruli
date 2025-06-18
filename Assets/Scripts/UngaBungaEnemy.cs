@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
 public class UngaBungaEnemy : MonoBehaviour
@@ -15,6 +13,10 @@ public class UngaBungaEnemy : MonoBehaviour
     public GameObject DeathEffectPrefab;
     public Transform FrontPoint;
     public AudioSource DeathSound;
+    public Transform[] EnemyRecognitionBorders;
+    public AudioSource AxeSwing;
+    public AudioSource AxeHit;
+    public AudioSource Shout;
 
     #endregion
 
@@ -24,6 +26,8 @@ public class UngaBungaEnemy : MonoBehaviour
     private Animator animator;
     private ParticleSystem bloodParticleSystem;
     private float currentSpeed;
+    private Transform player;
+    private bool canAttack = true;
 
 
     #endregion
@@ -33,22 +37,30 @@ public class UngaBungaEnemy : MonoBehaviour
         bloodParticleSystem = GetComponent<ParticleSystem>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        InvokeRepeating(nameof(MakeIdleAnim), 5f, 5f);
+        InvokeRepeating(nameof(MakeIdleAnim), 5f, 7.5f);
         currentSpeed = Speed;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     void Update()
     {
         Move();
         CheckForWalls();
+        TryToAttack();
     }
 
     #region Animations
-   
+
     private void MakeIdleAnim()
     {
-        animator.SetTrigger("Idle");
+        if (!IsPlayerNearby())
+        {
+            animator.SetTrigger("Idle");
+        }
     }
+
+    public void MakeShout()
+        => Helpers.PlayAudioSafely(Shout);
 
     #endregion
 
@@ -73,10 +85,29 @@ public class UngaBungaEnemy : MonoBehaviour
         transform.localScale = FlipAsset();
     }
 
-    private Vector3 FlipAsset()
+    private Vector3 FlipAsset(FlipDirection? direction = null)
     {
-        Horizontal *= -1;
-        return new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        var scale = transform.localScale;
+        switch (direction)
+        {
+            case FlipDirection.Left:
+                if (Horizontal > 0)
+                    Horizontal = -1;
+                scale.x = -Mathf.Abs(scale.x);
+                break;
+            case FlipDirection.Right:
+                if (Horizontal < 0)
+                    Horizontal = 1;
+                scale.x = Mathf.Abs(scale.x);
+                break;
+            case null:
+                Horizontal *= -1;
+                scale.x *= -1;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+        }
+        return scale;
     }
 
     private void StopMoving()
@@ -87,6 +118,7 @@ public class UngaBungaEnemy : MonoBehaviour
     private void StartMoving()
     {
         currentSpeed = Speed;
+        canAttack = true;
     }
 
     #endregion
@@ -134,7 +166,77 @@ public class UngaBungaEnemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public bool IsPlayerNearby()
+    {
+        var playerLayer = LayerMask.GetMask("Player");
+        var blockingLayers = LayerMask.GetMask("Earth");
+        return (from border in EnemyRecognitionBorders
+                select Physics2D.LinecastAll(transform.position, border.position, playerLayer | blockingLayers)
+            into hit
+                where hit.Any(h => h.collider?.gameObject.tag == "Player")
+                select hit.Length <= 1 || hit.FirstOrDefault().collider.gameObject.tag == "Player").FirstOrDefault();
+    }
+
+    public bool IsPlayerInAttackRange()
+    {
+        var hit2D = Physics2D.Linecast(transform.position, FrontPoint.position, LayerMask.GetMask("Player"));
+        return hit2D.collider?.gameObject.tag == "Player";
+    }
+
+    private void ChasePlayer()
+    {
+        var targetPosition = new Vector2(player.position.x, transform.position.y);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, Time.deltaTime * (currentSpeed + 0.3f));
+        transform.localScale = FlipAsset(player.position.x < transform.position.x ? FlipDirection.Left : FlipDirection.Right);
+    }
+
+    private void SetCanAttackToFalse()
+    {
+        canAttack = false;
+        currentSpeed = 0;
+    }
+
+    private void TryToAttack()
+    {
+        if (!IsPlayerNearby())
+            return;
+
+        if (IsPlayerInAttackRange())
+        {
+            if (!canAttack)
+            {
+                return;
+            }
+            animator.SetTrigger("Attack");
+        }
+        else
+        {
+            ChasePlayer();
+        }
+    }
+
+    public void TryDamageEnemy()
+    {
+        var playerLayerMask = LayerMask.GetMask("Player");
+
+        var hit2D = Physics2D.Linecast(transform.position, FrontPoint.position, playerLayerMask);
+        if (hit2D.collider == null || !hit2D.collider.CompareTag("Player"))
+        {
+            Helpers.PlayAudioSafely(AxeSwing);
+            return;
+        }
+
+        var playerInstance = hit2D.collider.GetComponent<Player>();
+        playerInstance.TakeDamage(35);
+        Helpers.PlayAudioSafely(AxeSwing);
+        Helpers.PlayAudioSafely(AxeHit);
+    }
 
     #endregion
+}
 
+public enum FlipDirection
+{
+    Left = -1,
+    Right = 1
 }

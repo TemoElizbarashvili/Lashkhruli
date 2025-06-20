@@ -174,7 +174,7 @@ public class UngaBungaEnemy : MonoBehaviour
                 select Physics2D.LinecastAll(transform.position, border.position, playerLayer | blockingLayers)
             into hit
                 where hit.Any(h => h.collider?.gameObject.tag == "Player")
-                select hit.Length <= 1 || hit.FirstOrDefault().collider.gameObject.tag == "Player").FirstOrDefault();
+                select hit.Length <= 1 || hit.FirstOrDefault().collider.gameObject.CompareTag("Player")).FirstOrDefault();
     }
 
     public bool IsPlayerInAttackRange()

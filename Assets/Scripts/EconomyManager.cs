@@ -1,22 +1,29 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class EconomyManager : MonoBehaviour
 {
+    public static EconomyManager Instance;
+
     public TextMeshProUGUI MoneyDisplay;
     public int MoneyAmount = 0;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        LoadEconomy();
+    }
+
     void Start()
     {
         DisplayMoney();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     string GetMoneyString(int money)
@@ -26,8 +33,34 @@ public class EconomyManager : MonoBehaviour
     {
         MoneyAmount += coin;
         DisplayMoney();
+        SaveEconomy();
     }
 
     void DisplayMoney()
         => MoneyDisplay.text = GetMoneyString(MoneyAmount);
+
+    public void SpendMoney(int amount)
+    {
+        if (MoneyAmount < amount) 
+            return;
+
+        MoneyAmount -= amount;
+        SaveEconomy();
+    }
+
+    public void SaveEconomy()
+    {
+        PlayerPrefs.SetInt("Money", MoneyAmount);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadEconomy()
+    {
+        MoneyAmount = PlayerPrefs.GetInt("Money", 0);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveEconomy();
+    }
 }

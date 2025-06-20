@@ -5,7 +5,6 @@ using Random = UnityEngine.Random;
 
 public class Chest : MonoBehaviour
 {
-    public int RewardPoint = 10;
     public ParticleSystem ChestParticleSystem;
     public EconomyManager EconomyManager;
     public AudioSource IdleAudioSource;
@@ -36,13 +35,13 @@ public class Chest : MonoBehaviour
         Destroy(IdleAudioSource);
         ChestParticleSystem.Stop();
         isOpened = true;
-        var foundedMoney = Random.Range(10, 50);
+        var foundedMoney = Random.Range(20, 50);
         EconomyManager.AddCoins(foundedMoney);
     }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (coll.gameObject.tag.Equals("Player"))
+        if (coll.gameObject.CompareTag("Player"))
         {
             isPlayerNear = true;
         }
@@ -50,7 +49,7 @@ public class Chest : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D coll)
     {
-        if (coll.gameObject.tag.Equals("Player"))
+        if (coll.gameObject.CompareTag("Player"))
         {
             isPlayerNear = false;
         }

@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public HealthBar HealthBar;
     public AudioSource SwordSwingSound;
     public AudioSource SwordHitSound;
+    public CheckPointSystem CheckPointSystem;
 
     #endregion
 
@@ -46,7 +47,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sortingOrder = 23;
+        spriteRenderer.sortingOrder = -1;
         animator = GetComponent<Animator>();
         grassParticleSystem = GetComponent<ParticleSystem>();
         CurrentHealth = MaxHealth;
@@ -63,12 +64,6 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            TakeDamage(20);
-        }
-
 
         transform.localScale = FlipHero();
     }
@@ -198,7 +193,7 @@ public class Player : MonoBehaviour
     private bool IsCollisionHappenedWithWall(Collision2D coll)
     {
         var collGameObj = coll.gameObject;
-        return string.Equals(collGameObj.tag, WallTag);
+        return collGameObj.CompareTag(WallTag);
     }
 
     private IEnumerator IncreaseGravityOverTime()
@@ -244,7 +239,7 @@ public class Player : MonoBehaviour
                 grounded = true;
                 animator.SetBool("IsGrounded", true);
                 canDoubleJump = true;
-                isEarthed = hit2D.collider.gameObject.tag.Equals(EarthTag);
+                isEarthed = hit2D.collider.gameObject.CompareTag(EarthTag);
                 break;
             }
             animator.SetBool("IsGrounded", false);
@@ -265,6 +260,19 @@ public class Player : MonoBehaviour
         var hit2D = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, enemyLayerMask);
         if (hit2D.collider == null || !hit2D.collider.CompareTag(EnemyTag))
         {
+            var healthLayerMask = LayerMask.GetMask("Health");
+            var hit = Physics2D.Linecast(transform.position, DamageDistanceTransform.position, healthLayerMask);
+            if (hit.collider == null || !hit.collider.CompareTag("Health"))
+            {
+                Helpers.PlayAudioSafely(SwordSwingSound);
+                return;
+            }
+            if (hit.collider.CompareTag("Health"))
+            {
+                hit.collider.GetComponent<HealthItem>().Destroy();
+                RecoverHealth(35);
+            }
+
             Helpers.PlayAudioSafely(SwordSwingSound);
             return;
         }
@@ -275,7 +283,7 @@ public class Player : MonoBehaviour
         {
             hitDirection.x *= -1;
         }
-        enemy.TakeDamage(10, hitDirection);
+        enemy.TakeDamage(20, hitDirection);
         Helpers.PlayAudioSafely(SwordSwingSound);
         Helpers.PlayAudioSafely(SwordHitSound);
     }
@@ -285,11 +293,20 @@ public class Player : MonoBehaviour
         animator.SetTrigger("TakeDamage");
         CurrentHealth -= damage;
         HealthBar.SetHealth(CurrentHealth);
-        if (CurrentHealth <= 0)
-        {
-            //TODO: DIE
-            //Die();
-        }
+        if (CurrentHealth > 0) 
+            return;
+
+        CheckPointSystem.RespawnPlayer();
+        CurrentHealth = MaxHealth;
+        HealthBar.SetHealth(CurrentHealth);
+    }
+
+    public void RecoverHealth(int health)
+    {
+        CurrentHealth += health;
+        if (CurrentHealth > MaxHealth)
+            CurrentHealth = MaxHealth;
+        HealthBar.SetHealth(CurrentHealth);
     }
 
     #endregion
@@ -303,6 +320,19 @@ public class Player : MonoBehaviour
         {
             grassParticleSystem.Emit(8);
         }
+    }
+
+    #endregion
+
+    #region CheckPoints
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (!coll.gameObject.CompareTag("CheckPoint")) 
+            return;
+
+        var checkPoint = coll.gameObject;
+        CheckPointSystem.SetCheckPoint(checkPoint);
     }
 
     #endregion

@@ -293,7 +293,7 @@ public class Player : MonoBehaviour
         animator.SetTrigger("TakeDamage");
         CurrentHealth -= damage;
         HealthBar.SetHealth(CurrentHealth);
-        if (CurrentHealth > 0) 
+        if (CurrentHealth > 0)
             return;
 
         CheckPointSystem.RespawnPlayer();
@@ -328,11 +328,20 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (!coll.gameObject.CompareTag("CheckPoint")) 
-            return;
-
-        var checkPoint = coll.gameObject;
-        CheckPointSystem.SetCheckPoint(checkPoint);
+        switch (coll.gameObject.tag)
+        {
+            case "CheckPoint":
+                var checkPoint = coll.gameObject;
+                CheckPointSystem.SetCheckPoint(checkPoint);
+                break;
+            case "Damage":
+                if (CurrentHealth == MaxHealth)
+                {
+                    TakeDamage(35);
+                }
+                Destroy(coll.gameObject);
+                break;
+        }
     }
 
     #endregion

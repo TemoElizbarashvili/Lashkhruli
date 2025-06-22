@@ -11,6 +11,7 @@ TagManager:
   - StartPoint
   - CheckPoint
   - Health
+  - Damage
   layers:
   - Default
   - TransparentFX

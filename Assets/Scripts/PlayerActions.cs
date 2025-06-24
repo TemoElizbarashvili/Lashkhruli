@@ -333,6 +333,13 @@ public class Player : MonoBehaviour
             case "CheckPoint":
                 var checkPoint = coll.gameObject;
                 CheckPointSystem.SetCheckPoint(checkPoint);
+                var sprite = coll.gameObject.GetComponent<SpriteRenderer>();
+                if (sprite.enabled)
+                    return;
+
+                sprite.enabled = true;
+                var audio = coll.gameObject.GetComponent<AudioSource>();
+                Helpers.PlayAudioSafely(audio);
                 break;
             case "Damage":
                 if (CurrentHealth == MaxHealth)

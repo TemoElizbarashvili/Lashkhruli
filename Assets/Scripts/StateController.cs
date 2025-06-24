@@ -4,7 +4,6 @@ public class StateController : MonoBehaviour
 {
     public GameObject HUD;
     public GameObject PauseMenu;
-    public AudioSource BackgroundMusic;
 
     private bool isPaused;
 
@@ -39,7 +38,7 @@ public class StateController : MonoBehaviour
         HUD.SetActive(true);
         Time.timeScale = 1f;
         isPaused = false;
-        BackgroundMusic.UnPause();
+        BackGroundMusic.Instance.Mute(false);
     }
 
     public void Pause()
@@ -50,7 +49,7 @@ public class StateController : MonoBehaviour
         HUD.SetActive(false);
         Time.timeScale = 0f;
         isPaused = true;
-        BackgroundMusic.Pause();
+        BackGroundMusic.Instance.Mute(true);
     }
 
 }

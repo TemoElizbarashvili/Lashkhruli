@@ -6,28 +6,31 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     public AudioMixer AudioMixer;
+   
     public bool IsMusicOn
     {
         get => PlayerPrefs.GetInt("MusicOn", 1) == 1;
         set => PlayerPrefs.SetInt("MusicOn", value ? 1 : 0);
     }
+   
     public float MasterVolume
     {
         get => PlayerPrefs.GetFloat("MasterVolume", 0.75f);
         set => PlayerPrefs.SetFloat("MasterVolume", value);
     }
+  
     public float MusicVolume
     {
         get => PlayerPrefs.GetFloat("MusicVolume", 0.75f);
         set => PlayerPrefs.SetFloat("MusicVolume", value);
     }
+  
     public float SFXVolume
     {
         get => PlayerPrefs.GetFloat("SFXVolume", 0.75f);
         set => PlayerPrefs.SetFloat("SFXVolume", value);
     }
-
-
+   
     void Awake()
     {
         if (Instance is not null)
@@ -36,6 +39,7 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+  
     public void SetMusicVolume(float volume)
     {
         if (volume == 0f || !IsMusicOn)
@@ -71,8 +75,6 @@ public class AudioManager : MonoBehaviour
         AudioMixer.SetFloat(name, value);
         PlayerPrefs.SetFloat(name, slideValue);
     }
-
-
 
     public void ToggleMusic(bool isOn)
     {

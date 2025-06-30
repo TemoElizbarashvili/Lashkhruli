@@ -16,10 +16,14 @@ public class DisplayManager : MonoBehaviour
 
     public void SetResolution(Resolution res)
     {
-        Screen.SetResolution(res.width, res.height, Screen.fullScreen);
-        Debug.Log("Resolution index changed: " + res);
+        Screen.SetResolution(res.width, res.height, GetCurrentScreenMode());
         PlayerPrefs.SetInt("ResolutionWidth", res.width);
         PlayerPrefs.SetInt("ResolutionHeight", res.height);
+    }
+
+    private FullScreenMode GetCurrentScreenMode()
+    {
+        return (FullScreenMode)PlayerPrefs.GetInt("FullScreenMode", 0);
     }
 
     public void SetScreenMode(int modeIndex)

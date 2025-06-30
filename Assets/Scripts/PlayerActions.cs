@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public AudioSource SwordSwingSound;
     public AudioSource SwordHitSound;
     public CheckPointSystem CheckPointSystem;
+    public int AttackDamage { get; set; } = 20;
 
     #endregion
 
@@ -283,7 +284,7 @@ public class Player : MonoBehaviour
         {
             hitDirection.x *= -1;
         }
-        enemy.TakeDamage(20, hitDirection);
+        enemy.TakeDamage(AttackDamage + Market.Instance.DamageAddition, hitDirection);
         Helpers.PlayAudioSafely(SwordSwingSound);
         Helpers.PlayAudioSafely(SwordHitSound);
     }

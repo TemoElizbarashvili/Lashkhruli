@@ -15,6 +15,9 @@ public class DisplaySettings : MonoBehaviour
     void Start()
     {
         // Resolution
+        if (ResolutionDropdown.options.Count > 0)
+            return; // Avoid re-initializing if already set
+
         resolutions = Screen.resolutions.Select(r => new Resolution { width = r.width, height = r.height }).Distinct().ToArray();
         ResolutionDropdown.ClearOptions();
 
@@ -53,6 +56,10 @@ public class DisplaySettings : MonoBehaviour
 
     public void OnResolutionChanged(int index)
     {
+        if (resolutions == null || resolutions.Length == 0)
+            return;
+        
+        // Ensure the index is within bounds
         if (index < 0 || index >= resolutions.Length)
             return;
 

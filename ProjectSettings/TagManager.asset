@@ -12,6 +12,7 @@ TagManager:
   - CheckPoint
   - Health
   - Damage
+  - HUD
   layers:
   - Default
   - TransparentFX

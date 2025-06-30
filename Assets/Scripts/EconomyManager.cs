@@ -59,6 +59,9 @@ public class EconomyManager : MonoBehaviour
         MoneyAmount = PlayerPrefs.GetInt("Money", 0);
     }
 
+    public int GetCoinCount()
+        => MoneyAmount;
+
     private void OnApplicationQuit()
     {
         SaveEconomy();

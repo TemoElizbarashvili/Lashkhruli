@@ -34,8 +34,6 @@ public class Market : MonoBehaviour
 
     #region Private Properties
 
-    private int gold { get; set; }
-
     private readonly int[] _prices = { 100, 200, 300, 400, 500 };
     private readonly int[] _damageAdditions = { 2, 8, 10, 15, 20 };
     private readonly int[] _healthAdditions = { 10, 20, 30, 40, 50 };
@@ -61,18 +59,16 @@ public class Market : MonoBehaviour
 
     void Start()
     {
-        gold = EconomyManager.Instance.GetCoinCount();
         UpdateMarketUI();
     }
 
     //TODO: update HUD Coin Count ! <3 
     public void BuyDamageUpgrade()
     {
-        if (currentDamageIndex >= _prices.Length || gold < _prices[currentDamageIndex])
+        if (currentDamageIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentDamageIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
-        gold -= _prices[currentDamageIndex];
         EconomyManager.Instance.SpendMoney(_prices[currentDamageIndex]);
         DamageAddition = _damageAdditions[currentDamageIndex];
         currentDamageIndex++;
@@ -81,11 +77,10 @@ public class Market : MonoBehaviour
 
     public void BuyHealthUpgrade()
     {
-        if (currentHealthIndex >= _prices.Length || gold < _prices[currentHealthIndex])
+        if (currentHealthIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentHealthIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
-        gold -= _prices[currentHealthIndex];
         EconomyManager.Instance.SpendMoney(_prices[currentHealthIndex]);
         HealthAddition = _healthAdditions[currentHealthIndex];
         currentHealthIndex++;
@@ -95,12 +90,11 @@ public class Market : MonoBehaviour
 
     public void BuySpeedNJumpUpgrade()
     {
-        if (currentSpeedNJumpIndex >= _prices.Length || gold < _prices[currentSpeedNJumpIndex])
+        if (currentSpeedNJumpIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentSpeedNJumpIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
         EconomyManager.Instance.SpendMoney(_prices[currentSpeedNJumpIndex]);
-        gold -= _prices[currentSpeedNJumpIndex];
         SpeedNJumpMultiplayer = _speedNJumpMultipliers[currentSpeedNJumpIndex];
         currentSpeedNJumpIndex++;
         UpdateMarketUI();
@@ -109,21 +103,21 @@ public class Market : MonoBehaviour
     public void UpdateMarketUI()
     {
         DamagePriceText.text = $"{_prices[currentDamageIndex]}";
-        var shouldDisable = (currentDamageIndex >= _prices.Length || gold < _prices[currentDamageIndex]);
+        var shouldDisable = (currentDamageIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentDamageIndex]);
         DamagePriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
         DamageUpgradeButton.interactable = !shouldDisable;
 
         HealthPriceText.text = $"{_prices[currentHealthIndex]}";
-        shouldDisable = (currentHealthIndex >= _prices.Length || gold < _prices[currentHealthIndex]);
+        shouldDisable = (currentHealthIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentHealthIndex]);
         HealthPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
         HealthUpgradeButton.interactable = !shouldDisable;
 
         SpeedNJumpPriceText.text = $"{_prices[currentSpeedNJumpIndex]}";
-        shouldDisable = (currentSpeedNJumpIndex >= _prices.Length || gold < _prices[currentSpeedNJumpIndex]);
+        shouldDisable = (currentSpeedNJumpIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentSpeedNJumpIndex]);
         SpeedNJumpPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
@@ -133,6 +127,6 @@ public class Market : MonoBehaviour
         HealthLevelText.text = $"{currentHealthIndex + 1}";
         SpeedNJumpLevelText.text = $"{currentSpeedNJumpIndex + 1}";
 
-        GoldText.text = $"{gold}";
+        GoldText.text = $"{EconomyManager.Instance.MoneyAmount}";
     }
 }

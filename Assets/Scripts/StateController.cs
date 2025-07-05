@@ -34,7 +34,8 @@ public class StateController : MonoBehaviour
             if (isPaused)
                 return;
 
-            var market = FindObjectsByType<Market>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault();
+            var market = FindObjectsByType<Market>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault();
             if (market.gameObject.activeSelf)
             {
                 ExitMarket(market.gameObject);
@@ -42,6 +43,7 @@ public class StateController : MonoBehaviour
             else
             {
                 OpenMarket(market!.gameObject);
+                market.UpdateMarketUI();
             }
         }
     }

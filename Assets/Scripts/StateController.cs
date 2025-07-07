@@ -3,10 +3,24 @@ using UnityEngine;
 
 public class StateController : MonoBehaviour
 {
+    public static StateController Instance { get; private set; }
+
     public GameObject HUD;
     public GameObject PauseMenu;
 
     private bool isPaused;
+
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

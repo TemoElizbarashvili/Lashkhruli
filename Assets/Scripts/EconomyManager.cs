@@ -1,69 +1,40 @@
-using UnityEngine;
-using TMPro;
+﻿using UnityEngine;
 
-public class EconomyManager : MonoBehaviour
+public static class EconomyManager
 {
-    public static EconomyManager Instance;
+    public static int MoneyAmount = 0;
 
-    public TextMeshProUGUI MoneyDisplay;
-    public int MoneyAmount = 0;
 
-    private void Awake()
+    public static string GetMoneyString()
+        => $"X {MoneyAmount}";
+
+    public static void LoadEconomy()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-        LoadEconomy();
+        MoneyAmount = PlayerPrefs.GetInt("Money", 0);
+        GameEvents.RaiseMoneyChanged();
     }
 
-    void Start()
+    public static void SaveEconomy()
     {
-        DisplayMoney();
-    }
-
-    string GetMoneyString(int money)
-        => $"X {money}";
-
-    public void AddCoins(int coin)
-    {
-        MoneyAmount += coin;
-        DisplayMoney();
-        SaveEconomy();
-    }
-
-    void DisplayMoney()
-        => MoneyDisplay.text = GetMoneyString(MoneyAmount);
-
-    public void SpendMoney(int amount)
-    {
-        if (MoneyAmount < amount) 
-            return;
-
-        MoneyAmount -= amount;
-        SaveEconomy();
-    }
-
-    public void SaveEconomy()
-    {
-        PlayerPrefs.SetInt("Money", MoneyAmount);
+        PlayerPrefs.SetInt("Money", EconomyManager.MoneyAmount);
         PlayerPrefs.Save();
     }
 
-    public void LoadEconomy()
+    public static void SpendMoney(int amount)
     {
-        MoneyAmount = PlayerPrefs.GetInt("Money", 0);
-    }
+        if (MoneyAmount < amount)
+            return;
 
-    public int GetCoinCount()
-        => MoneyAmount;
-
-    private void OnApplicationQuit()
-    {
+        MoneyAmount -= amount;
+        GameEvents.RaiseMoneyChanged();
         SaveEconomy();
     }
+
+    public static void AddCoins(int coin)
+    {
+        MoneyAmount += coin;
+        GameEvents.RaiseMoneyChanged();
+        SaveEconomy();
+    }
+
 }

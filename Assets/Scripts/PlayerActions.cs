@@ -6,22 +6,17 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Player : MonoBehaviour
 {
-
     #region Public variables
 
-    public float Speed = 2;
-    public float JumpForce = 2;
     public Transform HangingAllowedHeight;
     public Transform[] GroundCheckTransformObjects;
     public Transform DamageDistanceTransform;
     public ParticleSystem JumpParticleSystem;
-    public int MaxHealth = 100;
     public int CurrentHealth;
     public HealthBar HealthBar;
     public AudioSource SwordSwingSound;
     public AudioSource SwordHitSound;
     public CheckPointSystem CheckPointSystem;
-    public int AttackDamage { get; set; } = 20;
 
     #endregion
 
@@ -51,8 +46,8 @@ public class Player : MonoBehaviour
         spriteRenderer.sortingOrder = -1;
         animator = GetComponent<Animator>();
         grassParticleSystem = GetComponent<ParticleSystem>();
-        CurrentHealth = MaxHealth;
-        HealthBar.SetMaxHealth(MaxHealth);
+        CurrentHealth = PlayerActionsManager.MaxHealth;
+        HealthBar.SetMaxHealth(PlayerActionsManager.MaxHealth);
     }
 
     // Update is called once per frame
@@ -82,7 +77,7 @@ public class Player : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         animator.SetFloat("Speed", Math.Abs(horizontal));
 
-        rb.linearVelocity = new Vector2(horizontal * Speed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(horizontal * PlayerActionsManager.Speed, rb.linearVelocity.y);
     }
 
     private Vector3 FlipHero()
@@ -100,7 +95,7 @@ public class Player : MonoBehaviour
             isHanging = false;
             rb.gravityScale = 1f;
 
-            var jumpDirection = new Vector2(-transform.localScale.x * JumpForce, JumpForce);
+            var jumpDirection = new Vector2(-transform.localScale.x * PlayerActionsManager.JumpForce, PlayerActionsManager.JumpForce);
             rb.linearVelocity = Vector2.zero;
             StopFalling();
             rb.AddForce(jumpDirection, ForceMode2D.Impulse);
@@ -111,14 +106,14 @@ public class Player : MonoBehaviour
         else if (isEarthed)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0f, PlayerActionsManager.JumpForce), ForceMode2D.Impulse);
             JumpParticleSystem.Emit(20);
             canDoubleJump = true;
         }
         else if (canDoubleJump)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
-            rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0f, PlayerActionsManager.JumpForce), ForceMode2D.Impulse);
 
             canDoubleJump = false;
         }
@@ -284,7 +279,7 @@ public class Player : MonoBehaviour
         {
             hitDirection.x *= -1;
         }
-        enemy.TakeDamage(AttackDamage + Market.Instance.DamageAddition, hitDirection);
+        enemy.TakeDamage(PlayerActionsManager.AttackDamage, hitDirection);
         Helpers.PlayAudioSafely(SwordSwingSound);
         Helpers.PlayAudioSafely(SwordHitSound);
     }
@@ -298,15 +293,15 @@ public class Player : MonoBehaviour
             return;
 
         CheckPointSystem.RespawnPlayer();
-        CurrentHealth = MaxHealth;
+        CurrentHealth = PlayerActionsManager.MaxHealth;
         HealthBar.SetHealth(CurrentHealth);
     }
 
     public void RecoverHealth(int health)
     {
         CurrentHealth += health;
-        if (CurrentHealth > MaxHealth)
-            CurrentHealth = MaxHealth;
+        if (CurrentHealth > PlayerActionsManager.MaxHealth)
+            CurrentHealth = PlayerActionsManager.MaxHealth;
         HealthBar.SetHealth(CurrentHealth);
     }
 
@@ -343,7 +338,7 @@ public class Player : MonoBehaviour
                 Helpers.PlayAudioSafely(audio);
                 break;
             case "Damage":
-                if (CurrentHealth == MaxHealth)
+                if (CurrentHealth == PlayerActionsManager.MaxHealth)
                 {
                     TakeDamage(35);
                 }
@@ -354,4 +349,33 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Event Subs
+
+    public void OnEnable()
+    {
+        GameEvents.OnHealthIncreased += ChangeMaxHealth;
+        GameEvents.OnSpeedIncreased += ChangeSpeeds;
+        GameEvents.OnAttackDamageIncreased += IncreaseAttackDamage;
+    }
+
+    public void OnDisable()
+    {
+        GameEvents.OnHealthIncreased -= ChangeMaxHealth;
+        GameEvents.OnSpeedIncreased -= ChangeSpeeds;
+        GameEvents.OnAttackDamageIncreased -= IncreaseAttackDamage;
+    }
+
+    public void ChangeMaxHealth(int healthAddition)
+        => PlayerActionsManager.MaxHealth += healthAddition;
+
+    public void ChangeSpeeds(float multiplier)
+    {
+        PlayerActionsManager.Speed *= multiplier;
+        PlayerActionsManager.JumpForce *= multiplier;
+    }
+
+    public void IncreaseAttackDamage(int damageAddition)
+        => PlayerActionsManager.AttackDamage += damageAddition;
+
+    #endregion
 }

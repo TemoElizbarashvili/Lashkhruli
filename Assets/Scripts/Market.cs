@@ -1,19 +1,12 @@
-﻿using System;
-using System.Linq;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Market : MonoBehaviour
 {
-
     public static Market Instance { get; private set; }
 
     #region Public Properties
-
-    public int DamageAddition { get; set; }
-    public int HealthAddition { get; set; }
-    public float SpeedNJumpMultiplayer { get; set; }
 
     public TMP_Text DamagePriceText;
     public TMP_Text HealthPriceText;
@@ -32,28 +25,12 @@ public class Market : MonoBehaviour
 
     #endregion
 
-    #region Private Properties
-
-    private readonly int[] _prices = { 100, 200, 300, 400, 500 };
-    private readonly int[] _damageAdditions = { 2, 8, 10, 15, 20 };
-    private readonly int[] _healthAdditions = { 10, 20, 30, 40, 50 };
-    private readonly float[] _speedNJumpMultipliers = { 1.0f, 1.1f, 1.2f, 1.3f, 1.4f };
-    private int currentHealthIndex = 0;
-    private int currentDamageIndex = 0;
-    private int currentSpeedNJumpIndex = 0;
-
-    #endregion
-
-
     private void Awake()
     {
         if (Instance != null)
             return;
 
         Instance = this;
-        DamageAddition = 2;
-        HealthAddition = 10;
-        SpeedNJumpMultiplayer = 1.0f;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -65,68 +42,73 @@ public class Market : MonoBehaviour
     //TODO: update HUD Coin Count ! <3 
     public void BuyDamageUpgrade()
     {
-        if (currentDamageIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentDamageIndex])
+        if (MarketManager.CurrentDamageIndex >= MarketManager.Prices.Length ||
+            EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
-        EconomyManager.Instance.SpendMoney(_prices[currentDamageIndex]);
-        DamageAddition = _damageAdditions[currentDamageIndex];
-        currentDamageIndex++;
+        EconomyManager.SpendMoney(MarketManager.Prices[MarketManager.CurrentDamageIndex]);
+        GameEvents.RaiseAttackDamageIncreased(MarketManager.DamageAdditions[MarketManager.CurrentDamageIndex]);
+        MarketManager.CurrentDamageIndex++;
         UpdateMarketUI();
     }
 
     public void BuyHealthUpgrade()
     {
-        if (currentHealthIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentHealthIndex])
+        if (MarketManager.CurrentHealthIndex >= MarketManager.Prices.Length ||
+            EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentHealthIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
-        EconomyManager.Instance.SpendMoney(_prices[currentHealthIndex]);
-        HealthAddition = _healthAdditions[currentHealthIndex];
-        currentHealthIndex++;
+        EconomyManager.SpendMoney(MarketManager.Prices[MarketManager.CurrentHealthIndex]);
+        MarketManager.CurrentHealthIndex++;
         UpdateMarketUI();
-
+        GameEvents.RaiseHealthIncreased(MarketManager.HealthAdditions[MarketManager.CurrentHealthIndex]);
     }
 
     public void BuySpeedNJumpUpgrade()
     {
-        if (currentSpeedNJumpIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentSpeedNJumpIndex])
+        if (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
+            EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentSpeedNJumpIndex])
             return;
 
         Helpers.PlayAudioSafely(PurchaseSound);
-        EconomyManager.Instance.SpendMoney(_prices[currentSpeedNJumpIndex]);
-        SpeedNJumpMultiplayer = _speedNJumpMultipliers[currentSpeedNJumpIndex];
-        currentSpeedNJumpIndex++;
+        EconomyManager.SpendMoney(MarketManager.Prices[MarketManager.CurrentSpeedNJumpIndex]);
+        GameEvents.RaiseSpeedIncreased(MarketManager.SpeedNJumpMultipliers[MarketManager.CurrentSpeedNJumpIndex]);
+        MarketManager.CurrentSpeedNJumpIndex++;
         UpdateMarketUI();
     }
 
     public void UpdateMarketUI()
     {
-        DamagePriceText.text = $"{_prices[currentDamageIndex]}";
-        var shouldDisable = (currentDamageIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentDamageIndex]);
+        DamagePriceText.text = $"{MarketManager.Prices[MarketManager.CurrentDamageIndex]}";
+        var shouldDisable = (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
+                             EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex]);
         DamagePriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
         DamageUpgradeButton.interactable = !shouldDisable;
 
-        HealthPriceText.text = $"{_prices[currentHealthIndex]}";
-        shouldDisable = (currentHealthIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentHealthIndex]);
+        HealthPriceText.text = $"{MarketManager.Prices[MarketManager.CurrentHealthIndex]}";
+        shouldDisable = (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
+                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex]);
         HealthPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
         HealthUpgradeButton.interactable = !shouldDisable;
 
-        SpeedNJumpPriceText.text = $"{_prices[currentSpeedNJumpIndex]}";
-        shouldDisable = (currentSpeedNJumpIndex >= _prices.Length || EconomyManager.Instance.MoneyAmount < _prices[currentSpeedNJumpIndex]);
+        SpeedNJumpPriceText.text = $"{MarketManager.Prices[MarketManager.CurrentSpeedNJumpIndex]}";
+        shouldDisable = (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
+                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex]);
         SpeedNJumpPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
         SpeedNJumpUpgradeButton.interactable = !shouldDisable;
 
-        DamageLevelText.text = $"{currentDamageIndex + 1}";
-        HealthLevelText.text = $"{currentHealthIndex + 1}";
-        SpeedNJumpLevelText.text = $"{currentSpeedNJumpIndex + 1}";
+        DamageLevelText.text = $"{MarketManager.CurrentDamageIndex + 1}";
+        HealthLevelText.text = $"{MarketManager.CurrentHealthIndex + 1}";
+        SpeedNJumpLevelText.text = $"{MarketManager.CurrentSpeedNJumpIndex + 1}";
 
-        GoldText.text = $"{EconomyManager.Instance.MoneyAmount}";
+        GoldText.text = $"{EconomyManager.MoneyAmount}";
     }
 }

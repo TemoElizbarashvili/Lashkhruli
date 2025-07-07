@@ -1,12 +1,9 @@
-using System;
 using UnityEngine;
-using Object = System.Object;
 using Random = UnityEngine.Random;
 
 public class Chest : MonoBehaviour
 {
     public ParticleSystem ChestParticleSystem;
-    public EconomyManager EconomyManager;
     public AudioSource IdleAudioSource;
     public AudioSource OpenAudioSource;
 
@@ -35,7 +32,7 @@ public class Chest : MonoBehaviour
         Destroy(IdleAudioSource);
         ChestParticleSystem.Stop();
         isOpened = true;
-        var foundedMoney = Random.Range(20, 50);
+        var foundedMoney = Random.Range(30, 70);
         EconomyManager.AddCoins(foundedMoney);
     }
 

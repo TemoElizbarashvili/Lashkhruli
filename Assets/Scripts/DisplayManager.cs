@@ -8,7 +8,10 @@ public class DisplayManager : MonoBehaviour
     void Awake()
     {
         if (Instance is not null)
+        {
+            Destroy(gameObject);
             return;
+        }
 
         Instance = this;
         DontDestroyOnLoad(gameObject);

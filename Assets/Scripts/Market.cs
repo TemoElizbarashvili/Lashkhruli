@@ -28,7 +28,10 @@ public class Market : MonoBehaviour
     private void Awake()
     {
         if (Instance != null)
+        {
+            Destroy(gameObject);
             return;
+        }
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
@@ -39,7 +42,6 @@ public class Market : MonoBehaviour
         UpdateMarketUI();
     }
 
-    //TODO: update HUD Coin Count ! <3 
     public void BuyDamageUpgrade()
     {
         if (MarketManager.CurrentDamageIndex >= MarketManager.Prices.Length ||
@@ -91,7 +93,7 @@ public class Market : MonoBehaviour
 
         HealthPriceText.text = $"{MarketManager.Prices[MarketManager.CurrentHealthIndex]}";
         shouldDisable = (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
-                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex]);
+                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentHealthIndex]);
         HealthPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;
@@ -99,7 +101,7 @@ public class Market : MonoBehaviour
 
         SpeedNJumpPriceText.text = $"{MarketManager.Prices[MarketManager.CurrentSpeedNJumpIndex]}";
         shouldDisable = (MarketManager.CurrentSpeedNJumpIndex >= MarketManager.Prices.Length ||
-                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentDamageIndex]);
+                         EconomyManager.MoneyAmount < MarketManager.Prices[MarketManager.CurrentSpeedNJumpIndex]);
         SpeedNJumpPriceText.color = shouldDisable
             ? Color.gray
             : Color.white;

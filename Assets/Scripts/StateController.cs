@@ -1,12 +1,13 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateController : MonoBehaviour
 {
     public static StateController Instance { get; private set; }
 
-    public GameObject HUD;
-    public GameObject PauseMenu;
+    private GameObject HUD;
+    private GameObject pauseMenu;
 
     private bool isPaused;
 
@@ -20,6 +21,22 @@ public class StateController : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    void OnEnable()
+        => SceneManager.sceneLoaded += OnSceneLoaded;
+
+    void OnDisable()
+        => SceneManager.sceneLoaded -= OnSceneLoaded;
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        var canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        pauseMenu = canvases.FirstOrDefault(c => c.CompareTag("PauseMenu"))?.gameObject;
+        HUD = canvases.FirstOrDefault(c => c.CompareTag("HUD"))?.gameObject;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -66,7 +83,7 @@ public class StateController : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        PauseMenu.SetActive(false);
+        pauseMenu.SetActive(false);
         HUD.SetActive(true);
         var market = FindObjectsByType<Market>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault();
         if (market != null && market.gameObject.activeSelf)
@@ -82,7 +99,7 @@ public class StateController : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        PauseMenu.SetActive(true);
+        pauseMenu.SetActive(true);
         HUD.SetActive(false);
         var market = FindObjectsByType<Market>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault();
         if (market != null && market.gameObject.activeSelf)

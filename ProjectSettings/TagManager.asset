@@ -13,6 +13,7 @@ TagManager:
   - Health
   - Damage
   - HUD
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

@@ -1,20 +1,13 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Water : MonoBehaviour
 {
-    public Player Player;
-
+    private Player player;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        player = FindFirstObjectByType<Player>();
     }
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -22,6 +15,6 @@ public class Water : MonoBehaviour
         if (!coll.gameObject.CompareTag("Player"))
             return;
 
-        Player.TakeDamage(150);
+        player.TakeDamage(100000);
     }
 }

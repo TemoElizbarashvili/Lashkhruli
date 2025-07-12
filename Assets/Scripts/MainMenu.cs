@@ -4,7 +4,12 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public StateController StateControl;
+    private StateController stateControl;
+
+    void Start()
+    {
+        stateControl = FindFirstObjectByType<StateController>(FindObjectsInactive.Include);
+    }
 
     public void StartGame()
         => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -13,5 +18,5 @@ public class MainMenu : MonoBehaviour
         => Application.Quit();
 
     public void ResumeGame()
-        => StateControl.Resume();
+        => stateControl.Resume();
 }

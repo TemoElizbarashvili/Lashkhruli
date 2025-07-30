@@ -12,7 +12,9 @@ public class CointDisplay : MonoBehaviour
     }
 
     void DisplayMoney()
-        => MoneyDisplay.text = EconomyManager.GetMoneyString();
+    {
+        MoneyDisplay.text = EconomyManager.GetMoneyString();
+    }
 
     private void OnApplicationQuit()
         => EconomyManager.SaveEconomy();
@@ -20,6 +22,7 @@ public class CointDisplay : MonoBehaviour
     public void OnEnable()
     {
         GameEvents.OnMoneyChanged += DisplayMoney;
+        DisplayMoney();
     }
   
     public void OnDisable()

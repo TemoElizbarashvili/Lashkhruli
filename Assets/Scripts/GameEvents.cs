@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public static class GameEvents
 {
@@ -24,7 +25,10 @@ public static class GameEvents
     public static event Action OnMoneyChanged;
 
     public static void RaiseMoneyChanged()
-        => OnMoneyChanged?.Invoke();
+    {
+        Debug.Log("Money Changed Rised!!!");
+        OnMoneyChanged?.Invoke();
+    }
 
     #endregion
 }

@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 public static class EconomyManager
 {
     public static int MoneyAmount = 0;
-
 
     public static string GetMoneyString()
         => $"X {MoneyAmount}";
@@ -26,6 +27,7 @@ public static class EconomyManager
             return;
 
         MoneyAmount -= amount;
+        Debug.Log($"Spent {amount} coins. Remaining: {MoneyAmount}");
         GameEvents.RaiseMoneyChanged();
         SaveEconomy();
     }
